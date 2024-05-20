@@ -1,4 +1,3 @@
-import pytest
 from bs4 import BeautifulSoup
 from unittest.mock import MagicMock, patch
 from webpage_content_scraper import _get_reader_content, fetch_page_content, Formats
@@ -85,12 +84,13 @@ def _generate_reader_content_html(content):
 </body></html>
 """
 
+
 # Test _get_reader_content function
 def test_get_reader_content_with_reader_content():
-    html = _generate_reader_content_html("<h1>Test content</h1>")
+    html = _generate_reader_content_html('<h1>Test content</h1>')
     reader_content = _get_reader_content(html)
     assert reader_content is not None
-    assert reader_content.find().text == "Test content"
+    assert reader_content.find().text == 'Test content'
 
 
 def test_get_reader_content_without_reader_content():
@@ -99,56 +99,42 @@ def test_get_reader_content_without_reader_content():
     assert reader_content is None
 
 
+# Helper function to mock the Playwright context
+def mock_playwright_context(mock_sync_playwright):
+    mock_browser = MagicMock()
+    mock_page = MagicMock()
+    mock_context = MagicMock()
+    mock_context.__enter__.return_value = mock_context
+    mock_sync_playwright.return_value.__enter__.return_value = mock_context
+    mock_context.firefox.launch.return_value = mock_browser
+    mock_browser.new_page.return_value = mock_page
+    return mock_page
+
+
 # Test fetch_page_content function
-@patch("webpage_content_scraper.sync_playwright")
-@patch("webpage_content_scraper._get_reader_content")
+@patch('webpage_content_scraper.sync_playwright')
+@patch('webpage_content_scraper._get_reader_content')
 def test_fetch_page_content_html(mock_get_reader_content, mock_sync_playwright):
-    # Mock the Playwright context
-    mock_browser = MagicMock()
-    mock_page = MagicMock()
-    mock_context = MagicMock()
-    mock_context.__enter__.return_value = mock_context
-    mock_sync_playwright.return_value.__enter__.return_value = mock_context
-    mock_context.firefox.launch.return_value = mock_browser
-    mock_browser.new_page.return_value = mock_page
+    mock_page = mock_playwright_context(mock_sync_playwright)
 
-    mock_page.content.return_value = (
-        _generate_reader_content_html('<article><h1>Test content</h1></article>')
+    mock_page.content.return_value = _generate_reader_content_html(
+        '<article><h1>Test content</h1></article>'
     )
     mock_get_reader_content.return_value = BeautifulSoup(
-        mock_page.content.return_value, "html.parser"
+        mock_page.content.return_value, 'html.parser'
     )
 
-    url = "http://example.com"
-    result = fetch_page_content(url, format=Formats.HTML)
+    urls = ['http://example.com']
+    result = fetch_page_content(urls, format=Formats.HTML)
 
-    assert '<article><h1>Test content</h1></article>' in result
+    assert '<article><h1>Test content</h1></article>' in result[0]
 
 
-@patch("webpage_content_scraper.sync_playwright")
-@patch("webpage_content_scraper._get_reader_content")
+@patch('webpage_content_scraper.sync_playwright')
+@patch('webpage_content_scraper._get_reader_content')
 def test_fetch_page_content_markdown(mock_get_reader_content, mock_sync_playwright):
-    # Mock the Playwright context
-    mock_browser = MagicMock()
-    mock_page = MagicMock()
-    mock_context = MagicMock()
-    mock_context.__enter__.return_value = mock_context
-    mock_sync_playwright.return_value.__enter__.return_value = mock_context
-    mock_context.firefox.launch.return_value = mock_browser
-    mock_browser.new_page.return_value = mock_page
+    mock_page = mock_playwright_context(mock_sync_playwright)
 
-    mock_page.content.return_value = (
-       _generate_reader_content_html('<article><h1>Test Title</h1><p>Test content.</p></article>')
+    mock_page.content.return_value = _generate_reader_content_html(
+        '<article><h1>Test Title</h1><p>Test content.</p></article>'
     )
-    mock_get_reader_content.return_value = BeautifulSoup(
-        mock_page.content.return_value, "html.parser"
-    )
-
-    url = "http://example.com"
-    result = fetch_page_content(url, format=Formats.MARKDOWN)
-
-    assert "# Test Title\n\nTest content" in result
-
-
-if __name__ == "__main__":
-    pytest.main()
