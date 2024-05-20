@@ -1,6 +1,6 @@
 # Webpage Content Scraper
 
-[![PyPI](https://img.shields.io/pypi/v/webpage-content-scraper.svg)](https://pypi.org/project/python-webpage-content-scraper/)
+[![PyPI](https://img.shields.io/pypi/v/webpage-content-scraper.svg)](https://pypi.org/project/webpage-content-scraper/)
 [![Tests](https://github.com/ryan-blunden/python-webpage-content-scraper/actions/workflows/test.yml/badge.svg)](https://github.com/ryan-blunden/python-webpage-content-scraper/actions/workflows/test.yml)
 [![Changelog](https://img.shields.io/github/v/release/ryan-blunden/python-webpage-content-scraper?include_prereleases&label=changelog)](https://github.com/ryan-blunden/python-webpage-content-scraper/releases)
 [![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](https://github.com/ryan-blunden/python-webpage-content-scraper/blob/main/LICENSE)
