@@ -25,4 +25,7 @@ jobs:
     - name: Run tests
       run: |
         pytest
+        ruff check ./
+        ruff format --check
+        mypy ./webpage_content_scraper --disable-error-code=import-untyped
 
