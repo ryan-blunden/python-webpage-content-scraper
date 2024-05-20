@@ -27,10 +27,16 @@ Simply supply a list of pages and optionally, a format and timeout.
 ```python
 from webpage_content_scraper import fetch_page_content, Formats
 
-pages = ['https://microsoft.github.io/autogen/blog/2023/10/18/RetrieveChat/']
+urls = [
+    'https://microsoft.github.io/autogen/blog/2024/03/03/AutoGen-Update',
+    'https://microsoft.github.io/autogen/blog/2024/02/29/StateFlow',
+    'https://microsoft.github.io/autogen/blog/2024/02/11/FSM-GroupChat'
+]
+blog_posts = fetch_page_content(urls, Formats.MARKDOWN)
 
-html_content = fetch_page_content(url)
-markdown_content = fetch_page_content(url, Formats.MARKDOWN)
+for post in blog_posts:
+    print(f'\n---start---\n{post}\n---end---\n')
+
 ```
 
 ## Development
